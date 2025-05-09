@@ -34,15 +34,17 @@ public class JwtServiceImpl implements JwtService {
         return resolver.apply(claims);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> getRolesFromToken(String token) {
-        return extractClaim(token, claims -> claims.get("roles", List.class));
+        return extractClaim(token, claims -> (List<String>) claims.get("roles"));
     }
 
     private Claims extractAllClaims(String token) {
         return Jwts
-                .parser()
+                .parserBuilder()
                 .setSigningKey(getSigninKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
